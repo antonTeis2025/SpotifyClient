@@ -1,0 +1,6 @@
+USE spotify_client;
+
+DROP TABLE IF EXISTS Artista;
+DROP TABLE IF EXISTS Album;
+DROP TABLE IF EXISTS Track;
+

@@ -2,9 +2,9 @@ USE spotify_client;
 
 CREATE TABLE IF NOT EXISTS Artista (
     id VARCHAR(20) PRIMARY KEY,
-    name VARCHAR(20) NOT NULL,
+    name VARCHAR(200) NOT NULL,
     listeners INT DEFAULT 0,
-    url VARCHAR(200)
+    url VARCHAR(500)
 );
 
 CREATE TABLE IF NOT EXISTS Album (
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Album (
     artist_id VARCHAR(20) NOT NULL,
     name VARCHAR(200) NOT NULL,
     release_date DATE,
-    FOREIGN KEY (artist_id) REFERENCES Artista(artist_id) ON DELETE CASCADE
+    FOREIGN KEY (artist_id) REFERENCES Artista(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Track (

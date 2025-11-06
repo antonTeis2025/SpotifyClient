@@ -20,5 +20,11 @@
             <artifactId>lombok</artifactId>
             <version>1.18.42</version>
         </dependency>
+        <!-- Driver MySQL -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.33</version>
+        </dependency>
     </dependencies>
 </project>
