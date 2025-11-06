@@ -2,6 +2,7 @@ package org.spotify_cli;
 
 import org.spotify_cli.api.ApiClient;
 import org.spotify_cli.database.DatabaseService;
+import org.spotify_cli.models.Artista;
 
 import java.io.IOException;
 
@@ -9,6 +10,9 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         // DatabaseService db = new DatabaseService();
         ApiClient api = new ApiClient();
-        System.out.println(api.fetch("/artists/0jeYkqwckGJoHQhhXwgzk3/albums?limit=10"));
+        // System.out.println(api.getToken());
+        // System.out.println(api.fetch("/artists/0jeYkqwckGJoHQhhXwgzk3/albums?limit=10"));
+        Artista a = api.fetchArtista("0jeYkqwckGJoHQhhXwgzk3");
+        System.out.println(a.toString());
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.spotify_cli.config.Config;
+import org.spotify_cli.models.Artista;
 
 import java.io.IOException;
 import java.net.URI;
@@ -51,6 +52,7 @@ public class ApiClient {
         if (res.statusCode()==200) {
             try {
                 JsonNode node = mapper.readTree(res.body());
+                System.out.println("[+] Token obtenido correctamente");
                 return node.get("access_token").asText();
             } catch (Exception e) {
                 System.err.println("[!] Respuesta del servidor: " + res.body());
@@ -79,7 +81,30 @@ public class ApiClient {
                 HttpResponse.BodyHandlers.ofString()
         );
 
-        return res.body();
+        if (res.statusCode()==200) {
+            System.out.println("[+] Request GET exitosa a " + url);
+            return res.body();
+        } else {
+            System.err.println(res.body());
+            throw new IOException("[!] Fallo al hacer peticion "+ url);
+        }
+
+    }
+
+    public Artista fetchArtista(String id) throws IOException, InterruptedException {
+        String json = fetch("/artists/" + id);
+        JsonNode node = mapper.readTree(json);
+
+        try {
+            return new Artista(
+                    node.at("/id").asText(), // id
+                    node.at("/name").asText(), // nombre
+                    node.at("/followers/total").asInt(), // listeners
+                    node.at("/external_urls/spotify").asText() // url perfil
+            );
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
