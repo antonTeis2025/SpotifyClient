@@ -9,6 +9,6 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         // DatabaseService db = new DatabaseService();
         ApiClient api = new ApiClient();
-        System.out.println(api.getTokenAPI());
+        System.out.println(api.fetch("/artists/0jeYkqwckGJoHQhhXwgzk3/albums?limit=10"));
     }
 }

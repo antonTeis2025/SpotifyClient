@@ -1,6 +1,8 @@
 package org.spotify_cli.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import org.spotify_cli.config.Config;
 
 import java.io.IOException;
@@ -17,15 +19,19 @@ public class ApiClient {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
     private final String baseUrl = "https://api.spotify.com/v1";
 
-    public ApiClient() {
+    @Getter
+    private final String token;
 
+    public ApiClient() throws IOException, InterruptedException {
+        token = fetchTokenAPI();
     }
+
     /**
      * Esta funcion debe ejecutarse cada vez que se instancia la aplicacion
      */
     // TODO intentar hacer que justo calcule la ultima hora para aprovechar mejor los tokens.
 
-    public String getTokenAPI() throws IOException, InterruptedException {
+    public String fetchTokenAPI() throws IOException, InterruptedException {
         String formData = "grant_type=" + URLEncoder.encode("client_credentials", StandardCharsets.UTF_8) +
                 "&client_id=" + URLEncoder.encode(Config.getClient_id(), StandardCharsets.UTF_8) +
                 "&client_secret=" + URLEncoder.encode(Config.getClient_secret(), StandardCharsets.UTF_8);
@@ -43,7 +49,13 @@ public class ApiClient {
 
 
         if (res.statusCode()==200) {
-            return res.body();
+            try {
+                JsonNode node = mapper.readTree(res.body());
+                return node.get("access_token").asText();
+            } catch (Exception e) {
+                System.err.println("[!] Respuesta del servidor: " + res.body());
+                throw e;
+            }
         } else {
             System.err.println("[!] Respuesta del servidor: " + res.body());
             throw new IOException("[!] No fue posible obtener token de usuario, saliendo...");
@@ -52,7 +64,7 @@ public class ApiClient {
     }
 
 
-    public String fetch(String endpoint, String token) throws IOException, InterruptedException {
+    public String fetch(String endpoint) throws IOException, InterruptedException {
         String url = baseUrl + endpoint;
 
         HttpRequest req = HttpRequest.newBuilder()
