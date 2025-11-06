@@ -15,6 +15,10 @@ public class Config {
     private static String storageData = "data";
     private static String databaseUser = "root";
     private static String databasePassword = "admin";
+    @Getter
+    private static String client_id = null;
+    @Getter
+    private static String client_secret = null;
 
     static {
         try {
@@ -29,6 +33,8 @@ public class Config {
                 storageData = properties.getProperty("storage.data", storageData);
                 databaseUser = properties.getProperty("database.user", databaseUser);
                 databasePassword = properties.getProperty("database.password", databasePassword);
+                client_id = properties.getProperty("client.id", client_id);
+                client_secret = properties.getProperty("client.secret", client_secret);
                 System.out.println("[+] Configuración cargada correctamente");
             } else {
                 System.err.println("[!] Archivo de configuración 'config.properties' no encontrado");
