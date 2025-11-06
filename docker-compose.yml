@@ -1,13 +1,22 @@
+
 services:
   mysql:
     image: mysql:8.0
-    container_name: mysql_spotify
+    container_name: spotify_client
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: renaido #ahsdasgbdhjasbdjyh
+      MYSQL_DATABASE: spotify_client
     ports:
       - "3307:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: renaido
-      MYSQL_DATABASE: spotify_client
     volumes:
-      - ./sql:/docker-entrypoint-initdb.d
-      - ./ejecutar_sql.sh:/ejecutar_sql.sh
-    command: ["bash", "/ejecutar_sql.sh"]
+      - mysql_data:/var/lib/mysql
+    networks:
+      - mysql_network
+volumes:
+  mysql_data:
+  app_logs:
+
+networks:
+  mysql_network:
+    driver: bridge
