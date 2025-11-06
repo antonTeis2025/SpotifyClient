@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Getter;
 import org.spotify_cli.config.Config;
+import org.spotify_cli.models.Album;
 import org.spotify_cli.models.Artista;
+import org.spotify_cli.models.Track;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,6 +15,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApiClient {
 
@@ -91,7 +96,15 @@ public class ApiClient {
 
     }
 
+    /**
+     * Devuelve un artista a partir de su ID
+     * @param id ID del artista en la API de spotify
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     public Artista fetchArtista(String id) throws IOException, InterruptedException {
+        System.out.println("[+] Obteniendo informacion del artista con ID " + id);
         String json = fetch("/artists/" + id);
         JsonNode node = mapper.readTree(json);
 
@@ -105,6 +118,53 @@ public class ApiClient {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Devuelve los top 10 albumes de un artista
+     * @param a Objeto artista
+     * @return
+     */
+    public List<Album> fetchArtistsTop10Albums(Artista a) throws IOException, InterruptedException {
+        System.out.println("[+] Obteniendo 10 ultimos albums de " + a.getName());
+        List<Album> res = new ArrayList<>();
+        String json = fetch(String.format("/artists/%s/albums?limit=10", a.getId()));
+        JsonNode node = mapper.readTree(json).path("items");
+
+        for (JsonNode item: node) {
+            res.add(new Album(
+                  item.path("id").asText(),  //  id;
+                    a.getId(), // artist_id
+                  item.path("name").asText(),  // name;
+                  item.path("release_date").asText()  // release_date;
+            ));
+        }
+
+        return res;
+    }
+
+    /**
+     * Devuelve una lista de tracks de un album
+     * @param a Objeto album
+     * @return
+     */
+    public List<Track> fetchAlbumsTracks(Album a) throws IOException, InterruptedException {
+        System.out.println("[+] Obteniendo tracks del album " + a.getName());
+        List<Track> res = new ArrayList<>();
+        String json = fetch(String.format("/albums/%s/tracks", a.getId()));
+        JsonNode node = mapper.readTree(json);
+
+        for (JsonNode item: node.at("/items")) {
+            res.add(new Track(
+                    item.at("/id").asText(), // id
+                    a.getId(), // album_id
+                    a.getArtist_id(), // artist_id
+                    item.at("/duration_ms").asInt(), // duration
+                    item.at("/name").asText() // titulo
+            ));
+        }
+
+        return res;
     }
 
 }

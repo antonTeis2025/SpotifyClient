@@ -2,9 +2,11 @@ package org.spotify_cli;
 
 import org.spotify_cli.api.ApiClient;
 import org.spotify_cli.database.DatabaseService;
+import org.spotify_cli.models.Album;
 import org.spotify_cli.models.Artista;
 
 import java.io.IOException;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -13,6 +15,8 @@ public class Main {
         // System.out.println(api.getToken());
         // System.out.println(api.fetch("/artists/0jeYkqwckGJoHQhhXwgzk3/albums?limit=10"));
         Artista a = api.fetchArtista("0jeYkqwckGJoHQhhXwgzk3");
-        System.out.println(a.toString());
+        List<Album> albumList =  api.fetchArtistsTop10Albums(a);
+        api.fetchAlbumsTracks(albumList.get(0)).stream()
+                .forEach(System.out::println);
     }
 }

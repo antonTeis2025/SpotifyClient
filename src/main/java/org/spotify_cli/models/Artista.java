@@ -1,5 +1,8 @@
 package org.spotify_cli.models;
 
+import lombok.Data;
+
+@Data
 public class Artista {
 
     private String id;
