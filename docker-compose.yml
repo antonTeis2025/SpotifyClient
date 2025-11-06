@@ -1,0 +1,13 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_spotify
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: renaido
+      MYSQL_DATABASE: spotify_client
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+      - ./ejecutar_sql.sh:/ejecutar_sql.sh
+    command: ["bash", "/ejecutar_sql.sh"]
