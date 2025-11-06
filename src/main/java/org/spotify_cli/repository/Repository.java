@@ -1,6 +1,7 @@
 package org.spotify_cli.repository;
 
 
+import java.io.IOException;
 import java.util.List;
 
 // CRUD
@@ -12,7 +13,7 @@ public interface Repository<T, ID> {
      * @param id id en la API
      * @return Objeto parseado
      */
-    T add(ID id);
+    T add(ID id) throws IOException, InterruptedException;
 
     /**
      * obtiene todos los objetos de la DB

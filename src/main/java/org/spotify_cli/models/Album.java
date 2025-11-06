@@ -13,9 +13,10 @@ public class Album {
     private String artist_id;
     private String name;
     private LocalDate release_date;
+    private int no_tracks;
     private List<Track> tracks;
 
-    public Album(String id, String artist_id, String name, String release_date) {
+    public Album(String id, String artist_id, String name, String release_date, int no_tracks) {
         this.id = id;
         this.artist_id = artist_id;
         this.name = name;
@@ -24,6 +25,7 @@ public class Album {
         } catch (Exception e) {
             this.release_date = null;
         }
+        this.no_tracks = no_tracks;
 
     }
 }

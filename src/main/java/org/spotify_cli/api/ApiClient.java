@@ -37,7 +37,7 @@ public class ApiClient {
      */
     // TODO intentar hacer que justo calcule la ultima hora para aprovechar mejor los tokens.
 
-    public String fetchTokenAPI() throws IOException, InterruptedException {
+    private String fetchTokenAPI() throws IOException, InterruptedException {
         String formData = "grant_type=" + URLEncoder.encode("client_credentials", StandardCharsets.UTF_8) +
                 "&client_id=" + URLEncoder.encode(Config.getClient_id(), StandardCharsets.UTF_8) +
                 "&client_secret=" + URLEncoder.encode(Config.getClient_secret(), StandardCharsets.UTF_8);
@@ -136,7 +136,8 @@ public class ApiClient {
                   item.path("id").asText(),  //  id;
                     a.getId(), // artist_id
                   item.path("name").asText(),  // name;
-                  item.path("release_date").asText()  // release_date;
+                  item.path("release_date").asText(),  // release_date;
+                    item.path("total_tracks").asInt()
             ));
         }
 
