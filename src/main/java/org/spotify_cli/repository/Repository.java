@@ -8,8 +8,6 @@ import java.util.List;
 public interface Repository<T, ID> {
     /**
      * obtiene el objeto en la API para añadir a la DB
-     * si se añade un album, se añade el artista y los tracks en cascada
-     * si se añade un track, se añade el album y el artista en cascada
      * @param id id en la API
      * @return Objeto parseado
      */

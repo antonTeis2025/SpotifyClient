@@ -34,20 +34,7 @@ public class ArtistRepository implements Repository<Artista, String> {
      */
     public Artista addCascade(String id) throws IOException, InterruptedException {
         Artista a = add(id);
-        System.out.println("[+]     AÑADIENDO TOP 10 ALBUMS EN CASCADA (con sus tracks)...");
-        List<Album> artistAlbums = albumRepository.addAll(a);
-        System.out.println("[+]     AÑADIENDO TRACKS A LOS ALBUMS");
-        artistAlbums.stream().forEach(
-                album -> {
-                    try {
-                        addAlbumTracks(album);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-        );
+        List<Album> artistAlbums = albumRepository.addAllCascade(a);
         return a;
     }
     @Override
@@ -63,21 +50,6 @@ public class ArtistRepository implements Repository<Artista, String> {
         return a;
     }
 
-    // lo mismo con esta, hacer repository
-    private List<Track> addAlbumTracks(Album a) throws IOException, InterruptedException {
-        List<Track> tracks = api.fetchAlbumsTracks(a);
-        tracks.stream()
-                .forEach(track -> {
-                    db.insert("INSERT INTO Track (id, album_id, artist_id, duration, titulo) values (?, ?, ?, ?, ?)",
-                            track.getId(),
-                            track.getAlbum_id(),
-                            track.getArtist_id(),
-                            track.getDuration(),
-                            track.getTitulo()
-                    );
-                });
-        return tracks;
-    }
 
     @Override
     public List<Artista> getAll() {
