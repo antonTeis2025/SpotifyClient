@@ -34,7 +34,7 @@ public class ArtistRepository implements Repository<Artista, String> {
      */
     public Artista addCascade(String id) throws IOException, InterruptedException {
         Artista a = add(id);
-        List<Album> artistAlbums = albumRepository.addAllCascade(a);
+        albumRepository.addAllCascade(a);
         return a;
     }
     @Override

@@ -27,7 +27,7 @@ public class AlbumRepository {
      * @throws IOException
      * @throws InterruptedException
      */
-    public Album add(Album album) throws IOException, InterruptedException {
+    private Album add(Album album) throws IOException, InterruptedException {
         System.out.println("[+] Añadiendo "+ album.toString());
         db.insert("INSERT INTO Album (id, artist_id, name, no_tracks, release_date) values (?, ?, ?, ?, ?)",
                 album.getId(),
@@ -46,7 +46,7 @@ public class AlbumRepository {
      * @throws IOException
      * @throws InterruptedException
      */
-    public List<Album> addAll(Artista a) throws IOException, InterruptedException {
+    private List<Album> addAll(Artista a) throws IOException, InterruptedException {
         System.out.println("[+] Añadiendo top 10 albumes de " + a.toString());
         List<Album> albums = api.fetchArtistsTop10Albums(a);
         albums.stream().forEach(

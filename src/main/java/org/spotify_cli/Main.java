@@ -4,8 +4,10 @@ import org.spotify_cli.api.ApiClient;
 import org.spotify_cli.database.DatabaseService;
 import org.spotify_cli.models.Album;
 import org.spotify_cli.models.Artista;
+import org.spotify_cli.repository.AlbumRepository;
 import org.spotify_cli.repository.ArtistRepository;
 import org.spotify_cli.repository.RepositoryResources;
+import org.spotify_cli.repository.TrackRepository;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,14 +19,16 @@ public class Main {
                 new ApiClient(),
                 new DatabaseService()
         );
-        // Inicializamos repositorio de artistas con los recursos ya cargados
-        ArtistRepository ar = new ArtistRepository(repositoryResources);
+        // Inicializamos repositorios con los recursos ya cargados
+        TrackRepository tr = new TrackRepository(repositoryResources);
+        AlbumRepository alr = new AlbumRepository(repositoryResources, tr);
+        ArtistRepository arr = new ArtistRepository(repositoryResources, alr);
 
-        ar.add("0jeYkqwckGJoHQhhXwgzk3");
-        ar.getAll();
-        System.out.println(ar.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
-        ar.update(new Artista("", "Crusi", 42069, "http://google.es"), "0jeYkqwckGJoHQhhXwgzk3");
-        System.out.println(ar.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
-        ar.delete("0jeYkqwckGJoHQhhXwgzk3");
+        arr.addCascade("0jeYkqwckGJoHQhhXwgzk3");
+        arr.getAll();
+        System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
+        arr.update(new Artista("", "Crusi", 42069, "http://google.es"), "0jeYkqwckGJoHQhhXwgzk3");
+        System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
+        arr.delete("0jeYkqwckGJoHQhhXwgzk3");
     }
 }
