@@ -18,4 +18,10 @@ public class Formatters {
                 a.getUrl()));
     }
 
+    public static void artistaShortFormatter(Artista a) {
+        System.out.println(String.format("""
+                %s     -> ID %s
+                """, a.getName(), a.getId()));
+    }
+
 }

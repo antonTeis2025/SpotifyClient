@@ -28,12 +28,9 @@ public class Main {
         ArtistRepository arr = new ArtistRepository(repositoryResources, alr);
 
         if (Config.getDatabaseInitData()) {
+            // si la opcion esta activada, añade datos de muestra
             arr.addCascade("0jeYkqwckGJoHQhhXwgzk3");
         }
-        // arr.getAll();
-        // System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
-        // arr.update(new Artista("", "Crusi", 42069, "http://google.es"), "0jeYkqwckGJoHQhhXwgzk3");
-        // System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
 
         // INICIA EL MENU pasandole todos los repositorios
         Menu.start(arr, alr, tr);

@@ -39,4 +39,9 @@ public class TrackRepository {
         return tracks;
     }
 
+    // TODO public Track delete(String id) { }
+    // TODO public Track update(Track entity, String id) { }
+    // TODO public Track getByName(String name) { }
+    // TODO public Track getById(String id) { }
+
 }

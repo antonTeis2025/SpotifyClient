@@ -85,4 +85,9 @@ public class AlbumRepository {
         return albums;
     }
 
+    // TODO public Album delete(String id) { }
+    // TODO public Album update(Album entity, String id) { }
+    // TODO public Album getByName(String name) { }
+    // TODO public Album getById(String id) { }
+
 }
