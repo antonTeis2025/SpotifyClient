@@ -7,8 +7,10 @@ import org.spotify_cli.models.Artista;
 import org.spotify_cli.models.Track;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ArtistRepository implements Repository<Artista, String> {
 
@@ -80,25 +82,69 @@ public class ArtistRepository implements Repository<Artista, String> {
 
     @Override
     public List<Artista> getAll() {
-        return null;
+        System.out.println("[+] Obteniendo lista de artistas almacenada en BBDD");
+        List<Artista> res = new ArrayList<>();
+        List<Map<String, Object>> artists = db.select("SELECT * FROM Artista");
+
+        artists.stream().forEach(
+                fila -> {
+                    res.add(parseArtista(fila));
+                }
+        );
+        return res;
     }
+
+
 
     @Override
     public Artista getById(String s) {
-        return null;
+        System.out.println("[+] Obteniendo artista con ID " + s);
+        List<Map<String, Object>> artists = db.select("SELECT * FROM Artista WHERE id = ?", s);
+        AtomicReference<Artista> a = new AtomicReference<>();
+        artists.
+            forEach(
+                    fila -> {
+                        a.set(parseArtista(fila));
+                    }
+            );
+        return a.get();
     }
 
     @Override
     public Artista update(Artista entity, String s) {
-        return null;
+        Artista a = new Artista(
+                s,
+                entity.getName(),
+                entity.getListeners(),
+                entity.getUrl()
+        );
+
+        System.out.println("[+] Actualizando artista " + s + " con datos " + a.toString());
+
+        db.update("UPDATE Artista SET name = ?, listeners = ?, url = ? WHERE id = ?",
+                a.getName(),
+                a.getListeners(),
+                a.getUrl(),
+                a.getId()
+        );
+        return a;
     }
 
     @Override
     public Artista delete(String s) {
-        return null;
+        // primero obtiene el artista para devolverlo
+        Artista a = getById(s);
+        System.out.println("[+] Borrando artista " + a.toString());
+        db.delete("DELETE FROM Artista WHERE id = ?", s);
+        return a;
     }
 
-    private Artista artistaParser() {
-        return null;
+    private Artista parseArtista(Map<String, Object> fila) {
+        return new Artista(
+                (String) fila.get("id"),
+                (String) fila.get("name"),
+                (Integer) fila.get("listeners"),
+                (String) fila.get("url")
+        );
     }
 }

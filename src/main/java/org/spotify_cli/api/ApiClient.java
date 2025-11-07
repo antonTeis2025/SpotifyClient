@@ -38,6 +38,7 @@ public class ApiClient {
     // TODO intentar hacer que justo calcule la ultima hora para aprovechar mejor los tokens.
 
     private String fetchTokenAPI() throws IOException, InterruptedException {
+        System.out.println("[++] OBTENIENDO TOKEN CON CREDENCIALES...");
         String formData = "grant_type=" + URLEncoder.encode("client_credentials", StandardCharsets.UTF_8) +
                 "&client_id=" + URLEncoder.encode(Config.getClient_id(), StandardCharsets.UTF_8) +
                 "&client_secret=" + URLEncoder.encode(Config.getClient_secret(), StandardCharsets.UTF_8);

@@ -26,5 +26,7 @@ public class Main {
         );
 
         ar.add("0jeYkqwckGJoHQhhXwgzk3");
+        ar.getAll();
+        System.out.println(ar.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
     }
 }
