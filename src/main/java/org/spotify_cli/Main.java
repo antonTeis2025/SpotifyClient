@@ -1,6 +1,7 @@
 package org.spotify_cli;
 
 import org.spotify_cli.api.ApiClient;
+import org.spotify_cli.config.Config;
 import org.spotify_cli.database.DatabaseService;
 import org.spotify_cli.models.Album;
 import org.spotify_cli.models.Artista;
@@ -26,13 +27,23 @@ public class Main {
         AlbumRepository alr = new AlbumRepository(repositoryResources, tr);
         ArtistRepository arr = new ArtistRepository(repositoryResources, alr);
 
-        arr.addCascade("0jeYkqwckGJoHQhhXwgzk3");
+        if (Config.getDatabaseInitData()) {
+            arr.addCascade("0jeYkqwckGJoHQhhXwgzk3");
+        }
         // arr.getAll();
         // System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
         // arr.update(new Artista("", "Crusi", 42069, "http://google.es"), "0jeYkqwckGJoHQhhXwgzk3");
         // System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
-        System.out.println(Menu.muestraOpcionesInicio());;
-        Menu.muestraArtistasLocalmente(arr.getAll());
+        int opcion = Menu.muestraOpcionesInicio();
+
+        while (opcion != 0) {
+            switch (opcion) {
+                case 0 -> System.exit(0);
+                case 1 ->  Menu.muestraArtistasLocalmente(arr.getAll());
+                default -> System.err.println("[!] Opcion Invalida");
+            }
+            opcion = Menu.muestraOpcionesInicio();
+        }
 
     }
 }

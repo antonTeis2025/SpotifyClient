@@ -27,9 +27,7 @@ public class DatabaseService{
         if (Config.getDatabaseInitTables()) {
             initTablas();
         }
-        if (Config.getDatabaseInitData()) {
-            initData();
-        }
+
     }
 
     private void initConexion() {
@@ -102,9 +100,6 @@ public class DatabaseService{
         }
     }
 
-    private void initData() {
-        // TODO
-    }
 
 
     public List<Map<String, Object>> select(String sql, Object... params) {
