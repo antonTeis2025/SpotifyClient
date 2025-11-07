@@ -5,28 +5,26 @@ import org.spotify_cli.database.DatabaseService;
 import org.spotify_cli.models.Album;
 import org.spotify_cli.models.Artista;
 import org.spotify_cli.repository.ArtistRepository;
+import org.spotify_cli.repository.RepositoryResources;
 
 import java.io.IOException;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
-        // DatabaseService db = new DatabaseService();
-        // ApiClient api = new ApiClient();
-        // System.out.println(api.getToken());
-        // System.out.println(api.fetch("/artists/0jeYkqwckGJoHQhhXwgzk3/albums?limit=10"));
-        // Artista a = api.fetchArtista("0jeYkqwckGJoHQhhXwgzk3");
-        // List<Album> albumList =  api.fetchArtistsTop10Albums(a);
-        // api.fetchAlbumsTracks(albumList.get(0)).stream()
-        //        .forEach(System.out::println);
-
-        ArtistRepository ar = new ArtistRepository(
+        // Inicializamos los servicios de BBDD y de API
+        RepositoryResources repositoryResources = new RepositoryResources(
                 new ApiClient(),
                 new DatabaseService()
         );
+        // Inicializamos repositorio de artistas con los recursos ya cargados
+        ArtistRepository ar = new ArtistRepository(repositoryResources);
 
         ar.add("0jeYkqwckGJoHQhhXwgzk3");
         ar.getAll();
         System.out.println(ar.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
+        ar.update(new Artista("", "Crusi", 42069, "http://google.es"), "0jeYkqwckGJoHQhhXwgzk3");
+        System.out.println(ar.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
+        ar.delete("0jeYkqwckGJoHQhhXwgzk3");
     }
 }

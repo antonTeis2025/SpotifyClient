@@ -13,7 +13,12 @@ public class Artista {
 
 
     public Artista(String id, String name, int listeners, String url) {
-        this.id = id;
+        if (!id.equals("")) {
+            this.id = id;
+        } else {
+            this.id = null;
+        }
+
         this.name = name;
         this.listeners = listeners;
         this.url = url;

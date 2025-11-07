@@ -14,26 +14,28 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ArtistRepository implements Repository<Artista, String> {
 
+
+    private final AlbumRepository albumRepository;
     private final ApiClient api;
     private final DatabaseService db;
 
-    public ArtistRepository(ApiClient api, DatabaseService db) {
-        this.api = api;
-        this.db = db;
+    public ArtistRepository(RepositoryResources repo, AlbumRepository albumRepository) {
+        api = repo.getApi();
+        db = repo.getDb();
+        this.albumRepository = albumRepository;
     }
 
-    @Override
-    public Artista add(String id) throws IOException, InterruptedException {
-        Artista a = api.fetchArtista(id);
-        db.insert("INSERT INTO Artista(id, name, listeners, url) values (?, ?, ?, ?)",
-                a.getId(),
-                a.getName(),
-                a.getListeners(),
-                a.getUrl()
-        );
-        System.out.println("[+] AÑADIDO A BD " + a.toString());
+    /**
+     * Añade tanto el artista como sus 10 primeros albumes con sus tracks
+     * @param id
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public Artista addCascade(String id) throws IOException, InterruptedException {
+        Artista a = add(id);
         System.out.println("[+]     AÑADIENDO TOP 10 ALBUMS EN CASCADA (con sus tracks)...");
-        List<Album> artistAlbums = addAlbumsCascade(a);
+        List<Album> artistAlbums = albumRepository.addAll(a);
         System.out.println("[+]     AÑADIENDO TRACKS A LOS ALBUMS");
         artistAlbums.stream().forEach(
                 album -> {
@@ -48,22 +50,19 @@ public class ArtistRepository implements Repository<Artista, String> {
         );
         return a;
     }
-    // hacer otra clase AlbumRepository para mayor orden
-    private List<Album> addAlbumsCascade(Artista a) throws IOException, InterruptedException {
-        List<Album> albums = api.fetchArtistsTop10Albums(a);
-        albums.stream().forEach(
-                album -> {
-                    db.insert("INSERT INTO Album (id, artist_id, name, no_tracks, release_date) values (?, ?, ?, ?, ?)",
-                            album.getId(),
-                            album.getArtist_id(),
-                            album.getName(),
-                            album.getNo_tracks(),
-                            album.getRelease_date()
-                    );
-                }
+    @Override
+    public Artista add(String id) throws IOException, InterruptedException {
+        Artista a = api.fetchArtista(id);
+        db.insert("INSERT INTO Artista(id, name, listeners, url) values (?, ?, ?, ?)",
+                a.getId(),
+                a.getName(),
+                a.getListeners(),
+                a.getUrl()
         );
-        return albums;
+        System.out.println("[+] AÑADIDO A BD " + a.toString());
+        return a;
     }
+
     // lo mismo con esta, hacer repository
     private List<Track> addAlbumTracks(Album a) throws IOException, InterruptedException {
         List<Track> tracks = api.fetchAlbumsTracks(a);
