@@ -3,10 +3,14 @@ package org.spotify_cli.repository;
 import org.spotify_cli.api.ApiClient;
 import org.spotify_cli.database.DatabaseService;
 import org.spotify_cli.models.Album;
+import org.spotify_cli.models.Artista;
 import org.spotify_cli.models.Track;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TrackRepository {
     private final DatabaseService db;
@@ -39,9 +43,46 @@ public class TrackRepository {
         return tracks;
     }
 
-    // TODO public Track delete(String id) { }
+    public List<Track> getAll() {
+        System.out.println("[+] Obteniendo lista de tracks almacenada en BBDD");
+        List<Track> res = new ArrayList<>();
+        List<Map<String, Object>> tracks = db.select("SELECT * FROM Track");
+
+        tracks.stream().forEach(
+                fila -> {
+                    res.add(parseTrack(fila));
+                }
+        );
+        return res;
+    }
+
+    public Track getById(String id) {
+        System.out.println("[+] Obteniendo track con ID " + id);
+        List<Map<String, Object>> tracks = db.select("SELECT * FROM Track WHERE id = ?", id);
+        AtomicReference<Track> a = new AtomicReference<>();
+        tracks.
+                forEach(
+                        fila -> {
+                            a.set(parseTrack(fila));
+                        }
+                );
+        return a.get();
+    }
+
+    public Track delete(String id) {
+        Track t = getById(id);
+        db.delete("DELETE FROM Track WHERE id = ?", id);
+        return t;
+    }
     // TODO public Track update(Track entity, String id) { }
     // TODO public Track getByName(String name) { }
-    // TODO public Track getById(String id) { }
-
+    private Track parseTrack(Map<String, Object> fila) {
+        return new Track(
+                (String) fila.get("id"),
+                (String) fila.get("album_id"),
+                (String) fila.get("artist_id"),
+                (Integer) fila.get("duration"),
+                (String) fila.get("titulo")
+        );
+    }
 }

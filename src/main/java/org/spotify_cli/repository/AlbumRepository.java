@@ -6,7 +6,12 @@ import org.spotify_cli.models.Album;
 import org.spotify_cli.models.Artista;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AlbumRepository {
 
@@ -85,9 +90,48 @@ public class AlbumRepository {
         return albums;
     }
 
-    // TODO public Album delete(String id) { }
+    /**
+     * Obtiene todos los albums de la BBDD local
+     * @return
+     */
+    public List<Album> getAll() {
+        List<Album> albums = new ArrayList<>();
+        List<Map<String, Object>> filas = db.select("SELECT * FROM Album");
+        filas.forEach(
+                fila -> albums.add(parseAlbum(fila))
+        );
+        return albums;
+    }
+
+    public Album getById(String id) {
+        System.out.println("[+] Obteniendo album con ID " + id);
+        List<Map<String, Object>> artists = db.select("SELECT * FROM Album WHERE id = ?", id);
+        AtomicReference<Album> a = new AtomicReference<>();
+        artists.
+                forEach(
+                        fila -> {
+                            a.set(parseAlbum(fila));
+                        }
+                );
+        return a.get();
+    }
+
+    public Album delete(String id) {
+        Album a = getById(id);
+        db.delete("DELETE FROM Album WHERE id = ?", id);
+        return a;
+    }
     // TODO public Album update(Album entity, String id) { }
     // TODO public Album getByName(String name) { }
-    // TODO public Album getById(String id) { }
 
+
+    private Album parseAlbum(Map<String, Object> fila) {
+        return new Album(
+                (String) fila.get("id"),
+                (String) fila.get("artist_id"),
+                (String) fila.get("name"),
+                fila.get("release_date").toString(),
+                (Integer) fila.get("no_tracks")
+        );
+    }
 }

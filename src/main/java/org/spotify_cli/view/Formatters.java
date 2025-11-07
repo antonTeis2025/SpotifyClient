@@ -1,6 +1,8 @@
 package org.spotify_cli.view;
 
+import org.spotify_cli.models.Album;
 import org.spotify_cli.models.Artista;
+import org.spotify_cli.models.Track;
 
 public class Formatters {
     public static void artistaFormatter(Artista a) {
@@ -19,9 +21,14 @@ public class Formatters {
     }
 
     public static void artistaShortFormatter(Artista a) {
-        System.out.println(String.format("""
-                %s     -> ID %s
-                """, a.getName(), a.getId()));
+        System.out.println(String.format("%s -> %s", a.getName(), a.getId()));
+    }
+
+    public static void albumShortFormatter(Album a) {
+        System.out.println(String.format("%s -> %s", a.getName(), a.getId()));
+    }
+    public static void trackShortFormatter(Track t) {
+        System.out.println(String.format("%s -> %s", t.getTitulo(), t.getId()));
     }
 
 }
