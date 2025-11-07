@@ -42,10 +42,13 @@ public class Menu {
                     int opt = Menu.muestraMenuEliminar();
                     switch (opt) {
                         case 0 -> start(arr, alr, tr);
-                        case 1 -> arr.delete(Menu.muestraEliminarArtista(arr.getAll()));
-                        case 2 -> alr.delete(Menu.muestraEliminarAlbum(alr.getAll()));
-                        case 3 -> tr.delete(Menu.muestraEliminarTrack(tr.getAll()));
+                        case 1 -> arr.delete(Menu.muestraSeleccionarArtista(arr.getAll()));
+                        case 2 -> alr.delete(Menu.muestraSeleccionarAlbum(alr.getAll()));
+                        case 3 -> tr.delete(Menu.muestraSeleccionarTrack(tr.getAll()));
                     }
+                }
+                case 5 -> {
+
                 }
                 default -> System.err.println("[!] Opcion Invalida");
             }
@@ -125,29 +128,48 @@ public class Menu {
         }
         return opcion;
     }
+    // OPCION 5 // TODO
+    private static int muestraMenuActualizar() {
+        Menu.cls();
+        System.out.println("""
+                [?] Qué tipo de dato deseas actualizar?
+                
+                1. Artista 
+                2. Album
+                3. Track
+                0. Atrás
+                """
+        );
+        int opcion = Integer.parseInt(sc.nextLine());
+        while (opcion!=1 && opcion!=2 && opcion!=3 && opcion != 0) {
+            System.out.println("[!] Opcion no valida");
+            opcion = Integer.parseInt(sc.nextLine());
+        }
+        return opcion;
+    }
 
-    // OPCION 4.1 - Delete artista
-    private static String muestraEliminarArtista(List<Artista> artistaList) {
+    private static String muestraSeleccionarArtista(List<Artista> artistaList) {
         Menu.cls();
         System.out.println("[?] Qué artista de la lista deseas eliminar?");
         artistaList.forEach(Formatters::artistaShortFormatter);
         System.out.print("\nID > ");
         return sc.nextLine();
     }
-    // OPCION 4.2 - Delete album
-    private static String muestraEliminarAlbum(List<Album> albumList) {
+
+    private static String muestraSeleccionarAlbum(List<Album> albumList) {
         Menu.cls();
         albumList.forEach(Formatters::albumShortFormatter);
         System.out.print("\nID >");
         return sc.nextLine();
     }
-    // OPCION 4.3 - Delete track
-    private static String muestraEliminarTrack(List<Track> trackList) {
+
+    private static String muestraSeleccionarTrack(List<Track> trackList) {
         Menu.cls();
         trackList.forEach(Formatters::trackShortFormatter);
         System.out.print("\nID >");
         return sc.nextLine();
     }
+
 
 
 }
