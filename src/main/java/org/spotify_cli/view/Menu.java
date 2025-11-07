@@ -1,6 +1,9 @@
 package org.spotify_cli.view;
 
 import org.spotify_cli.models.Artista;
+import org.spotify_cli.repository.AlbumRepository;
+import org.spotify_cli.repository.ArtistRepository;
+import org.spotify_cli.repository.TrackRepository;
 
 import java.util.List;
 import java.util.Scanner;
@@ -16,7 +19,21 @@ public class Menu {
         }
     };
 
-    public static void muestraBanner() {
+    public static void start(ArtistRepository arr, AlbumRepository alr, TrackRepository tr) {
+        int opcion = Menu.muestraOpcionesInicio();
+
+        while (opcion != 0) {
+            switch (opcion) {
+                case 0 -> System.exit(0);
+                case 1 ->  Menu.muestraArtistasLocalmente(arr.getAll());
+                default -> System.err.println("[!] Opcion Invalida");
+            }
+            opcion = Menu.muestraOpcionesInicio();
+        }
+
+    }
+
+    private static void muestraBanner() {
         System.out.println("""
                                           __  .__  _____          \s
                      ____________   _____/  |_|__|/ ____\\__.__.   \s
@@ -34,8 +51,8 @@ public class Menu {
                 """);
     }
 
-    public static int muestraOpcionesInicio() {
-
+    private static int muestraOpcionesInicio() {
+        Menu.cls();
         Menu.muestraBanner();
         int opcion = 0;
         System.out.println("------------------------------------");
@@ -52,10 +69,12 @@ public class Menu {
         return opcion;
     }
 
-    public static void muestraArtistasLocalmente(List<Artista> lista) {
+    private static void muestraArtistasLocalmente(List<Artista> lista) {
         Menu.cls();
         System.out.println("[+] Los artistas disponibles localmente son: ");
         lista.forEach(Formatters::artistaFormatter);
+        System.out.println("\n\n Enter para continuar...");
+        sc.nextLine();
     }
 
 }

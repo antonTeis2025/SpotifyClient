@@ -34,16 +34,8 @@ public class Main {
         // System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
         // arr.update(new Artista("", "Crusi", 42069, "http://google.es"), "0jeYkqwckGJoHQhhXwgzk3");
         // System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
-        int opcion = Menu.muestraOpcionesInicio();
 
-        while (opcion != 0) {
-            switch (opcion) {
-                case 0 -> System.exit(0);
-                case 1 ->  Menu.muestraArtistasLocalmente(arr.getAll());
-                default -> System.err.println("[!] Opcion Invalida");
-            }
-            opcion = Menu.muestraOpcionesInicio();
-        }
-
+        // INICIA EL MENU pasandole todos los repositorios
+        Menu.start(arr, alr, tr);
     }
 }
