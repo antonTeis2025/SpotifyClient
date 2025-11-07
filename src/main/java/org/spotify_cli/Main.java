@@ -8,6 +8,7 @@ import org.spotify_cli.repository.AlbumRepository;
 import org.spotify_cli.repository.ArtistRepository;
 import org.spotify_cli.repository.RepositoryResources;
 import org.spotify_cli.repository.TrackRepository;
+import org.spotify_cli.view.Menu;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,6 +30,7 @@ public class Main {
         System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
         arr.update(new Artista("", "Crusi", 42069, "http://google.es"), "0jeYkqwckGJoHQhhXwgzk3");
         System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
+        Menu.cls();
         arr.delete("0jeYkqwckGJoHQhhXwgzk3");
     }
 }
