@@ -15,6 +15,7 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
+
         // Inicializamos los servicios de BBDD y de API
         RepositoryResources repositoryResources = new RepositoryResources(
                 new ApiClient(),
@@ -26,11 +27,12 @@ public class Main {
         ArtistRepository arr = new ArtistRepository(repositoryResources, alr);
 
         arr.addCascade("0jeYkqwckGJoHQhhXwgzk3");
-        arr.getAll();
-        System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
-        arr.update(new Artista("", "Crusi", 42069, "http://google.es"), "0jeYkqwckGJoHQhhXwgzk3");
-        System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
-        Menu.cls();
-        arr.delete("0jeYkqwckGJoHQhhXwgzk3");
+        // arr.getAll();
+        // System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
+        // arr.update(new Artista("", "Crusi", 42069, "http://google.es"), "0jeYkqwckGJoHQhhXwgzk3");
+        // System.out.println(arr.getById("0jeYkqwckGJoHQhhXwgzk3").toString());
+        System.out.println(Menu.muestraOpcionesInicio());;
+        Menu.muestraArtistasLocalmente(arr.getAll());
+
     }
 }
