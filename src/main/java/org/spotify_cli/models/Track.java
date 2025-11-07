@@ -1,5 +1,8 @@
 package org.spotify_cli.models;
 
+import lombok.Data;
+
+@Data
 public class Track {
     private String id;
     private String album_id;

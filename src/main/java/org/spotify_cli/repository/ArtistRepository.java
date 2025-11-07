@@ -4,9 +4,11 @@ import org.spotify_cli.api.ApiClient;
 import org.spotify_cli.database.DatabaseService;
 import org.spotify_cli.models.Album;
 import org.spotify_cli.models.Artista;
+import org.spotify_cli.models.Track;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public class ArtistRepository implements Repository<Artista, String> {
 
@@ -28,12 +30,24 @@ public class ArtistRepository implements Repository<Artista, String> {
                 a.getUrl()
         );
         System.out.println("[+] AÑADIDO A BD " + a.toString());
-        System.out.println("[+] AÑADIENDO TOP 10 ALBUMS EN CASCADA (con sus tracks)...");
-        addAlbumsCascade(a);
+        System.out.println("[+]     AÑADIENDO TOP 10 ALBUMS EN CASCADA (con sus tracks)...");
+        List<Album> artistAlbums = addAlbumsCascade(a);
+        System.out.println("[+]     AÑADIENDO TRACKS A LOS ALBUMS");
+        artistAlbums.stream().forEach(
+                album -> {
+                    try {
+                        addAlbumTracks(album);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
         return a;
     }
     // hacer otra clase AlbumRepository para mayor orden
-    private void addAlbumsCascade(Artista a) throws IOException, InterruptedException {
+    private List<Album> addAlbumsCascade(Artista a) throws IOException, InterruptedException {
         List<Album> albums = api.fetchArtistsTop10Albums(a);
         albums.stream().forEach(
                 album -> {
@@ -46,11 +60,27 @@ public class ArtistRepository implements Repository<Artista, String> {
                     );
                 }
         );
+        return albums;
+    }
+    // lo mismo con esta, hacer repository
+    private List<Track> addAlbumTracks(Album a) throws IOException, InterruptedException {
+        List<Track> tracks = api.fetchAlbumsTracks(a);
+        tracks.stream()
+                .forEach(track -> {
+                    db.insert("INSERT INTO Track (id, album_id, artist_id, duration, titulo) values (?, ?, ?, ?, ?)",
+                            track.getId(),
+                            track.getAlbum_id(),
+                            track.getArtist_id(),
+                            track.getDuration(),
+                            track.getTitulo()
+                    );
+                });
+        return tracks;
     }
 
     @Override
     public List<Artista> getAll() {
-        return List.of();
+        return null;
     }
 
     @Override
@@ -65,6 +95,10 @@ public class ArtistRepository implements Repository<Artista, String> {
 
     @Override
     public Artista delete(String s) {
+        return null;
+    }
+
+    private Artista artistaParser() {
         return null;
     }
 }
