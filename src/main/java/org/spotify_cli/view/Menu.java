@@ -5,6 +5,7 @@ import org.spotify_cli.repository.AlbumRepository;
 import org.spotify_cli.repository.ArtistRepository;
 import org.spotify_cli.repository.TrackRepository;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,13 +20,19 @@ public class Menu {
         }
     };
 
-    public static void start(ArtistRepository arr, AlbumRepository alr, TrackRepository tr) {
+    public static void pause() {
+        System.out.println("\n\n Enter para continuar...");
+        sc.nextLine();
+    }
+
+    public static void start(ArtistRepository arr, AlbumRepository alr, TrackRepository tr) throws IOException, InterruptedException {
         int opcion = Menu.muestraOpcionesInicio();
 
         while (opcion != 0) {
             switch (opcion) {
                 case 0 -> System.exit(0);
                 case 1 ->  Menu.muestraArtistasLocalmente(arr.getAll());
+                case 2 ->  arr.add(Menu.muestraMenuAñadirArtista());
                 default -> System.err.println("[!] Opcion Invalida");
             }
             opcion = Menu.muestraOpcionesInicio();
@@ -73,8 +80,16 @@ public class Menu {
         Menu.cls();
         System.out.println("[+] Los artistas disponibles localmente son: ");
         lista.forEach(Formatters::artistaFormatter);
-        System.out.println("\n\n Enter para continuar...");
-        sc.nextLine();
+        Menu.pause();
+    }
+
+    private static String muestraMenuAñadirArtista() {
+        Menu.cls();
+        System.out.println(" https://spotify.com/artist/xxxyyyzzzz/  ->  el ID es xxxyyyzzzz" );
+        System.out.println("[?] Para añadir un artista, introduce su ID");
+        System.out.println("Esto añadira también sus 10 ultimos albums con sus respectivos tracks");
+        System.out.print("> ");
+        return sc.nextLine();
     }
 
 }
