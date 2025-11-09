@@ -111,7 +111,13 @@ public class Menu {
         System.out.println("6. Busquedas / ordenaciones...");
         System.out.println("0. Salir...");
         System.out.print("\n> ");
-        opcion = Integer.parseInt(sc.nextLine());
+        String opt = sc.nextLine();
+        if (opt.isEmpty()) {
+            opcion = 0;
+        } else{
+            opcion = Integer.parseInt(opt);
+
+        }
         return opcion;
     }
     // OPCION 1
@@ -477,7 +483,10 @@ public class Menu {
         switch (Integer.parseInt(opcion)) {
             case 1 -> {
                 List<Album> ordenados = albumRepository.getAll().stream()
-                        .sorted(Comparator.comparing(Album::getRelease_date))
+                        .sorted(Comparator.comparing(
+                                Album::getRelease_date,
+                                Comparator.nullsLast(Comparator.naturalOrder())
+                        ))
                         .toList();
                 Menu.cls();
                 if (Menu.mostrarOexportar("albumes") == 2) {
@@ -513,7 +522,7 @@ public class Menu {
     }
 
 
-    private static void muestraBusquedasTrack(TrackRepository trackRepository) {
+    private static void muestraBusquedasTrack(TrackRepository trackRepository) throws IOException {
         Menu.cls();
         System.out.println("""
                 [?] Qué quieres hacer? 
@@ -529,7 +538,31 @@ public class Menu {
             System.err.print("\n[!] Opcion no valida\n> ");
             opcion = sc.nextLine();
         }
-        // TODO
+        switch (Integer.parseInt(opcion)) {
+            case 1 -> {
+                List<Track> ordenados = trackRepository.getAll().stream()
+                        .sorted(Comparator.comparing(Track::getDuration))
+                        .toList();
+                Menu.cls();
+                if (Menu.mostrarOexportar("tracks") == 2) {
+                    CsvExporter.exportTracks(ordenados, Menu.pideRutaExportacion());
+                }
+                System.out.println("[+] Resultados:");
+                ordenados.forEach(Formatters::trackFormatter);
+                Menu.pause();
+            }
+            case 2 -> {
+                System.out.print("[?] Nombre a buscar: ");
+                List<Track> resultados = trackRepository.getByTitle(sc.nextLine());
+                Menu.cls();
+                if (Menu.mostrarOexportar("tracks") == 2) {
+                    CsvExporter.exportTracks(resultados, Menu.pideRutaExportacion());
+                }
+                System.out.println("[+] Resultados: ");
+                resultados.forEach(Formatters::trackFormatter);
+                Menu.pause();
+            }
+        }
 
     }
 }

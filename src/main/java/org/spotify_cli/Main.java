@@ -30,6 +30,8 @@ public class Main {
         if (Config.getDatabaseInitData()) {
             // si la opcion esta activada, añade datos de muestra
             arr.addCascade("0jeYkqwckGJoHQhhXwgzk3");
+            arr.addCascade("3bgsNtcf5d5h9jbQbohfBK");
+            arr.addCascade("3GMBcFbI21Tbi1POVBmCwb");
         }
 
         // INICIA EL MENU pasandole todos los repositorios

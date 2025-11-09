@@ -165,11 +165,15 @@ public class AlbumRepository {
 
 
     private Album parseAlbum(Map<String, Object> fila) {
+        String release_date = "";
+        if (fila.get("release_date") != null) {
+            release_date = fila.get("release_date").toString();
+        }
         return new Album(
                 (String) fila.get("id"),
                 (String) fila.get("artist_id"),
                 (String) fila.get("name"),
-                fila.get("release_date").toString(),
+                release_date,
                 (Integer) fila.get("no_tracks")
         );
     }
