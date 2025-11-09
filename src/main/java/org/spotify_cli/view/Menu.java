@@ -48,7 +48,13 @@ public class Menu {
                     }
                 }
                 case 5 -> {
-
+                    switch (Menu.muestraMenuActualizar()) {
+                        case 0 -> start(arr, alr, tr);
+                        case 1 -> {
+                            Artista a = Menu.muestraActualizarArtista(arr);
+                            arr.update(a, a.getId());
+                        }
+                    }
                 }
                 default -> System.err.println("[!] Opcion Invalida");
             }
@@ -150,7 +156,7 @@ public class Menu {
 
     private static String muestraSeleccionarArtista(List<Artista> artistaList) {
         Menu.cls();
-        System.out.println("[?] Qué artista de la lista deseas eliminar?");
+        System.out.println("[?] Qué artista de la lista deseas seleccionar?");
         artistaList.forEach(Formatters::artistaShortFormatter);
         System.out.print("\nID > ");
         return sc.nextLine();
@@ -158,6 +164,7 @@ public class Menu {
 
     private static String muestraSeleccionarAlbum(List<Album> albumList) {
         Menu.cls();
+        System.out.println("[?] Qué album de la lista deseas seleccionar?");
         albumList.forEach(Formatters::albumShortFormatter);
         System.out.print("\nID >");
         return sc.nextLine();
@@ -165,11 +172,41 @@ public class Menu {
 
     private static String muestraSeleccionarTrack(List<Track> trackList) {
         Menu.cls();
+        System.out.println("[?] Qué track de la lista deseas seleccionar?");
         trackList.forEach(Formatters::trackShortFormatter);
         System.out.print("\nID >");
         return sc.nextLine();
     }
 
+    private static Artista muestraActualizarArtista(ArtistRepository artistRepository) {
+        String id = Menu.muestraSeleccionarArtista(artistRepository.getAll());
+        Artista oldArtista = artistRepository.getById(id);
 
+        Menu.cls();
+        System.out.print(String.format("[?] Nuevo nombre (Enter para mantener %s): ", oldArtista.getName()));
+        String nuevoNombre = sc.nextLine();
+        if (nuevoNombre.equals("")) {
+            nuevoNombre = oldArtista.getName();
+        }
+
+        System.out.print(String.format("[?] Nuevos oyentes (Enter para mantener %d): ", oldArtista.getListeners()));
+        String nuevosOyentes = sc.nextLine();
+        if (nuevosOyentes.equals("")) {
+            nuevosOyentes = Integer.toString(oldArtista.getListeners());
+        }
+
+        System.out.print(String.format("[?] Nuevo URL (Enter para mantener %s): ", oldArtista.getUrl()));
+        String nuevoURL = sc.nextLine();
+        if (nuevoURL.equals("")){
+            nuevoURL = oldArtista.getUrl();
+        }
+
+        return new Artista(
+                oldArtista.getId(),
+                nuevoNombre,
+                Integer.parseInt(nuevosOyentes),
+                nuevoURL
+        );
+    }
 
 }
