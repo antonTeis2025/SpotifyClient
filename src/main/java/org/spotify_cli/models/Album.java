@@ -14,7 +14,7 @@ public class Album {
     private String name;
     private LocalDate release_date;
     private int no_tracks;
-    private List<Track> tracks;
+
 
     public Album(String id, String artist_id, String name, String release_date, int no_tracks) {
         this.id = id;

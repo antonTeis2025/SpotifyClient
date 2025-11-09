@@ -76,7 +76,7 @@ public class TrackRepository {
     }
     public Track update(Track entity, String id) {
         db.update("UPDATE Track SET duration = ?, titulo = ? WHERE id = ?",
-                entity.getDuration(), entity.getTitulo());
+                entity.getDuration(), entity.getTitulo(), id);
 
         return entity;
     }

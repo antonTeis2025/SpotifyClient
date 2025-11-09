@@ -237,7 +237,7 @@ public class Menu {
         String nuevoNombre = Menu.enterOrOld(sc.nextLine(), oldAlbum.getName());
 
 
-        System.out.print(String.format("[?] Nueva fecha de lanzamiento (Enter para mantener %s): ", oldAlbum.getName()));
+        System.out.print(String.format("[?] Nueva fecha de lanzamiento (YYYY-MM-DD) (Enter para mantener %s): ", oldAlbum.getRelease_date().toString()));
         String nuevaFecha = Menu.enterOrOld(sc.nextLine(), oldAlbum.getRelease_date().toString());
 
         return new Album(
@@ -258,7 +258,7 @@ public class Menu {
         String nuevoNombre = Menu.enterOrOld(sc.nextLine(), oldTrack.getTitulo());
 
 
-        System.out.print(String.format("[?] Nueva duracion (Enter para mantener %d): ", oldTrack.getDuration()));
+        System.out.print(String.format("[?] Nueva duracion (en ms) (Enter para mantener %d): ", oldTrack.getDuration()));
         String nuevaDuracion = Menu.enterOrOld(sc.nextLine(), Integer.toString(oldTrack.getDuration()));
 
         return new Track(

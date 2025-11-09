@@ -123,8 +123,8 @@ public class AlbumRepository {
     }
 
     public Album update(Album entity, String id) {
-        db.update("UPDATE Album SET name = ?, no_tracks = ?, release_date = ?",
-                entity.getName(), entity.getNo_tracks(), entity.getRelease_date());
+        db.update("UPDATE Album SET name = ?, no_tracks = ?, release_date = ? WHERE id = ?",
+                entity.getName(), entity.getNo_tracks(), entity.getRelease_date(), id);
         return entity;
     }
     // TODO public Album getByName(String name) { }
