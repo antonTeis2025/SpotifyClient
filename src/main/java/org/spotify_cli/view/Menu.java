@@ -314,26 +314,29 @@ public class Menu {
     }
 
     private static String pideRutaExportacion() {
-        Menu.cls();
+
         System.out.print("[?] Introduce la ruta de guardado (debe ser un fichero CSV) > ");
         return sc.nextLine();
     }
 
     private static void muestraFuchicar(ArtistRepository artistRepository, AlbumRepository albumRepository, TrackRepository trackRepository) throws IOException {
-
+        List<Artista> artists = artistRepository.getAll();
+        Menu.cls();
         int opcionArtistas = Menu.mostrarOexportar("artistas");
         if (opcionArtistas == 2) {
             try {
-                CsvExporter.exportArtists(artistRepository.getAll(), Menu.pideRutaExportacion());
+
+                CsvExporter.exportArtists(artists, Menu.pideRutaExportacion());
             } catch (IOException e) {
                 System.err.println("[!] Error al exportar: " + e);
             }
             Menu.pause();
             Menu.cls();
         }
-
         Artista a = Menu.seleccionarArtista(artistRepository);
         List<Album> albums = Menu.albumsDeArtista(a, albumRepository);
+
+
 
         int opcionAlbums = Menu.mostrarOexportar("albums");
         if (opcionAlbums == 2) {
@@ -347,7 +350,12 @@ public class Menu {
         }
 
         List<Track> tracks = Menu.tracksDeAlbum(albums, albumRepository, trackRepository);
+        albums.forEach(album -> {
+            Formatters.albumShortFormatter(album);
+        });
         int opcionTracks = Menu.mostrarOexportar("tracks");
+
+        System.out.println("[+] Tracks del album");
         if (opcionTracks==2) {
             try {
                 CsvExporter.exportTracks(tracks, Menu.pideRutaExportacion());
@@ -359,8 +367,8 @@ public class Menu {
 
         }
 
-        System.out.println("[+] Tracks del album");
         tracks.forEach(Formatters::trackFormatter);
+
         System.out.println("\n");
         Menu.pause();
 
