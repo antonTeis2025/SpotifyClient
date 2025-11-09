@@ -69,6 +69,19 @@ public class TrackRepository {
         return a.get();
     }
 
+    public List<Track> getByAlbum(Album a) {
+        System.out.println("[+] Obteniendo lista de tracks del album " + a.getName());
+        List<Track> res = new ArrayList<>();
+        List<Map<String, Object>> tracks = db.select("SELECT * FROM Track WHERE album_id = ?", a.getId());
+
+        tracks.stream().forEach(
+                fila -> {
+                    res.add(parseTrack(fila));
+                }
+        );
+        return res;
+    }
+
     public Track delete(String id) {
         Track t = getById(id);
         db.delete("DELETE FROM Track WHERE id = ?", id);

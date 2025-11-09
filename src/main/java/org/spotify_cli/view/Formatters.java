@@ -20,6 +20,28 @@ public class Formatters {
                 a.getUrl()));
     }
 
+    public static String msToDuration(long ms) {
+        if (ms < 0) {
+            ms = 0;
+        }
+
+        long segundosTotales = ms / 1000;
+
+        long minutos = segundosTotales / 60;
+        long segundos = segundosTotales % 60;
+        return "" + minutos + ":" + segundos;
+
+    }
+
+    public static void trackFormatter(Track t) {
+        System.out.println(String.format("""
+                
+                %s [ %s ]                
+                
+                """, t.getTitulo(), Formatters.msToDuration(t.getDuration())
+        ));
+    }
+
     public static void artistaShortFormatter(Artista a) {
         System.out.println(String.format("%s -> %s", a.getName(), a.getId()));
     }

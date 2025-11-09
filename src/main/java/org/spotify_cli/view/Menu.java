@@ -6,6 +6,7 @@ import org.spotify_cli.models.Track;
 import org.spotify_cli.repository.AlbumRepository;
 import org.spotify_cli.repository.ArtistRepository;
 import org.spotify_cli.repository.TrackRepository;
+import org.spotify_cli.storage.CsvExporter;
 
 import java.io.IOException;
 import java.util.List;
@@ -38,6 +39,7 @@ public class Menu {
                 case 0 -> System.exit(0);
                 case 1 ->  Menu.muestraArtistasLocalmente(arr.getAll());
                 case 2 ->  arr.add(Menu.muestraMenuAñadirArtista());
+                case 3 ->  Menu.muestraFuchicar(arr, alr, tr);
                 case 4 -> {
                     int opt = Menu.muestraMenuEliminar();
                     switch (opt) {
@@ -98,7 +100,7 @@ public class Menu {
         System.out.println(">   Qué deseas hacer? ");
         System.out.println("1. Consultar artistas disponibles localmente");
         System.out.println("2. Añadir artista a la BBDD local");
-        System.out.println("3. Fuchicar...");
+        System.out.println("3. Fuchicar (mira / exporta los datos)...");
         System.out.println("4. Eliminar...");
         System.out.println("5. Actualizar...");
         System.out.println("6. Buscar...");
@@ -163,6 +165,11 @@ public class Menu {
         return opcion;
     }
 
+    /**
+     * Devuelve el ID del artista de una lista
+     * @param artistaList
+     * @return
+     */
     private static String muestraSeleccionarArtista(List<Artista> artistaList) {
         Menu.cls();
         System.out.println("[?] Qué artista de la lista deseas seleccionar?");
@@ -171,6 +178,11 @@ public class Menu {
         return sc.nextLine();
     }
 
+    /**
+     * Devuelve el ID del album de una lista
+     * @param albumList
+     * @return
+     */
     private static String muestraSeleccionarAlbum(List<Album> albumList) {
         Menu.cls();
         System.out.println("[?] Qué album de la lista deseas seleccionar?");
@@ -179,6 +191,11 @@ public class Menu {
         return sc.nextLine();
     }
 
+    /**
+     * Devuelve el ID del track de una lista
+     * @param trackList
+     * @return
+     */
     private static String muestraSeleccionarTrack(List<Track> trackList) {
         Menu.cls();
         System.out.println("[?] Qué track de la lista deseas seleccionar?");
@@ -269,5 +286,84 @@ public class Menu {
                 nuevoNombre
         );
     }
+
+    private static List<Album> albumsDeArtista(Artista a, AlbumRepository albumRepository) {
+        return albumRepository.getByArtist(a);
+    }
+
+    private static List<Track> tracksDeAlbum(List<Album> albums, AlbumRepository albumRepository, TrackRepository trackRepository) {
+        Album a = albumRepository.getById(Menu.muestraSeleccionarAlbum(albums));
+        return trackRepository.getByAlbum(a);
+    }
+
+    private static int mostrarOexportar(String tipo_dato) {
+        Menu.cls();
+        System.out.printf("""
+                [?] Qué deseas hacer?
+                1. Solamente mostrar %s
+                2. Exportar %s a CSV y mostrar 
+                %n""", tipo_dato, tipo_dato);
+        System.out.println();
+        System.out.print("> ");
+        int opcion = Integer.parseInt(sc.nextLine());
+        while (opcion != 1 && opcion != 2) {
+            System.out.println("[!] Opcion no valida");
+            opcion = Integer.parseInt(sc.nextLine());
+        }
+        return opcion;
+    }
+
+    private static String pideRutaExportacion() {
+        Menu.cls();
+        System.out.print("[?] Introduce la ruta de guardado (debe ser un fichero CSV) > ");
+        return sc.nextLine();
+    }
+
+    private static void muestraFuchicar(ArtistRepository artistRepository, AlbumRepository albumRepository, TrackRepository trackRepository) throws IOException {
+
+        int opcionArtistas = Menu.mostrarOexportar("artistas");
+        if (opcionArtistas == 2) {
+            try {
+                CsvExporter.exportArtists(artistRepository.getAll(), Menu.pideRutaExportacion());
+            } catch (IOException e) {
+                System.err.println("[!] Error al exportar: " + e);
+            }
+            Menu.pause();
+            Menu.cls();
+        }
+
+        Artista a = Menu.seleccionarArtista(artistRepository);
+        List<Album> albums = Menu.albumsDeArtista(a, albumRepository);
+
+        int opcionAlbums = Menu.mostrarOexportar("albums");
+        if (opcionAlbums == 2) {
+            try {
+                CsvExporter.exportAlbums(albums, Menu.pideRutaExportacion());
+            } catch (Exception e) {
+                System.err.println("[!] Error al exportar: " + e);
+            }
+            Menu.pause();
+            Menu.cls();
+        }
+
+        List<Track> tracks = Menu.tracksDeAlbum(albums, albumRepository, trackRepository);
+        int opcionTracks = Menu.mostrarOexportar("tracks");
+        if (opcionTracks==2) {
+            try {
+                CsvExporter.exportTracks(tracks, Menu.pideRutaExportacion());
+            } catch (Exception e) {
+                System.err.println("[!] Error al exportar: " + e);
+            }
+            Menu.pause();
+            Menu.cls();
+
+        }
+
+        System.out.println("[+] Tracks del album");
+        tracks.forEach(Formatters::trackFormatter);
+        System.out.println("\n");
+        Menu.pause();
+
+    };
 
 }

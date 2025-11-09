@@ -116,6 +116,17 @@ public class AlbumRepository {
         return a.get();
     }
 
+    public List<Album> getByArtist(Artista a) {
+        System.out.println("[+] Obteniendo albums del artista " + a.getName());
+        List<Album> albums = new ArrayList<>();
+
+        List<Map<String, Object>> filas = db.select("SELECT * FROM Album WHERE artist_id = ?", a.getId());
+        filas.forEach(
+                fila -> albums.add(parseAlbum(fila))
+        );
+        return albums;
+    }
+
     public Album delete(String id) {
         Album a = getById(id);
         db.delete("DELETE FROM Album WHERE id = ?", id);
