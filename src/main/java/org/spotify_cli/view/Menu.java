@@ -39,7 +39,7 @@ public class Menu {
             switch (opcion) {
                 case 0 -> System.exit(0);
                 case 1 ->  Menu.muestraArtistasLocalmente(arr.getAll());
-                case 2 ->  arr.add(Menu.muestraMenuAñadirArtista());
+                case 2 ->  arr.addCascade(Menu.muestraMenuAñadirArtista());
                 case 3 ->  Menu.muestraFuchicar(arr, alr, tr);
                 case 4 -> {
                     int opt = Menu.muestraMenuEliminar();
