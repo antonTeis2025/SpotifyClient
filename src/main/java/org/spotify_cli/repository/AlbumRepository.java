@@ -9,9 +9,11 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class AlbumRepository {
 
@@ -116,17 +118,26 @@ public class AlbumRepository {
         return a.get();
     }
 
-    public Album getByName(String name) {
+    public List<Album> getByName(String name) {
         System.out.println("[+] Obteniendo album con nombre " + name);
-        List<Map<String, Object>> artists = db.select("SELECT * FROM Album WHERE name = ?", name);
-        AtomicReference<Album> a = new AtomicReference<>();
-        artists.
-                forEach(
-                        fila -> {
-                            a.set(parseAlbum(fila));
-                        }
-                );
-        return a.get();
+        List<Album> albums = getAll();
+        if (name == null || name.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        String busquedaLower = name.trim().toLowerCase();
+        String[] palabras = busquedaLower.split("\\s+");
+
+        return albums.stream()
+                .filter(album -> coincideBusqueda(album.getName(), palabras))
+                .collect(Collectors.toList());
+    }
+
+    private boolean coincideBusqueda(String nombre, String[] palabras) {
+        String nombreLower = nombre.toLowerCase();
+
+        return Arrays.stream(palabras)
+                .anyMatch(palabra -> nombreLower.contains(palabra));
     }
 
     public List<Album> getByArtist(Artista a) {

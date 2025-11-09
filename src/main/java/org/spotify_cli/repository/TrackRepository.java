@@ -8,9 +8,11 @@ import org.spotify_cli.models.Track;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class TrackRepository {
     private final DatabaseService db;
@@ -82,17 +84,26 @@ public class TrackRepository {
         return res;
     }
 
-    public Track getByTitle(String title) {
+    public List<Track> getByTitle(String title) {
         System.out.println("[+] Obteniendo track con titulo " + title);
-        List<Map<String, Object>> tracks = db.select("SELECT * FROM Track WHERE titulo = ?", title);
-        AtomicReference<Track> a = new AtomicReference<>();
-        tracks.
-                forEach(
-                        fila -> {
-                            a.set(parseTrack(fila));
-                        }
-                );
-        return a.get();
+        List<Track> tracks = getAll();
+        if (title == null || title.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        String busquedaLower = title.trim().toLowerCase();
+        String[] palabras = busquedaLower.split("\\s+");
+
+        return tracks.stream()
+                .filter(track -> coincideBusqueda(track.getTitulo(), palabras))
+                .collect(Collectors.toList());
+    }
+
+    private boolean coincideBusqueda(String nombre, String[] palabras) {
+        String nombreLower = nombre.toLowerCase();
+
+        return Arrays.stream(palabras)
+                .anyMatch(palabra -> nombreLower.contains(palabra));
     }
 
     public Track delete(String id) {

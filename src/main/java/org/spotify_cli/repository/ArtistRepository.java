@@ -8,9 +8,11 @@ import org.spotify_cli.models.Track;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class ArtistRepository implements Repository<Artista, String> {
 
@@ -81,17 +83,26 @@ public class ArtistRepository implements Repository<Artista, String> {
         return a.get();
     }
 
-    public Artista getByName(String name) {
+    public List<Artista> getByName(String name) {
         System.out.println("[+] Obteniendo artista con nombre " + name);
-        List<Map<String, Object>> artists = db.select("SELECT * FROM Artista WHERE name = ?", name);
-        AtomicReference<Artista> a = new AtomicReference<>();
-        artists.
-                forEach(
-                        fila -> {
-                            a.set(parseArtista(fila));
-                        }
-                );
-        return a.get();
+        List<Artista> artistas = getAll();
+        if (name == null || name.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        String busquedaLower = name.trim().toLowerCase();
+        String[] palabras = busquedaLower.split("\\s+");
+
+        return artistas.stream()
+                .filter(artista -> coincideBusqueda(artista.getName(), palabras))
+                .collect(Collectors.toList());
+    }
+
+    private boolean coincideBusqueda(String nombre, String[] palabras) {
+        String nombreLower = nombre.toLowerCase();
+
+        return Arrays.stream(palabras)
+                .anyMatch(palabra -> nombreLower.contains(palabra));
     }
 
     @Override

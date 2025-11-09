@@ -9,6 +9,7 @@ import org.spotify_cli.repository.TrackRepository;
 import org.spotify_cli.storage.CsvExporter;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -66,7 +67,11 @@ public class Menu {
                         }
                     }
                 }
-                default -> System.err.println("[!] Opcion Invalida");
+                case 6 -> Menu.muestraMenuBusquedas(arr, alr, tr);
+                default -> {
+                    System.err.println("[!] Opcion Invalida");
+                    Menu.pause();
+                }
             }
             opcion = Menu.muestraOpcionesInicio();
         }
@@ -389,6 +394,7 @@ public class Menu {
                 && Integer.parseInt(opcion) != 1
                 && Integer.parseInt(opcion) != 2
                 && Integer.parseInt(opcion) != 3
+                && Integer.parseInt(opcion) != 0
         ) {
             System.err.print("\n[!] Opcion no valida\n> ");
             opcion = sc.nextLine();
@@ -404,13 +410,12 @@ public class Menu {
     }
 
 
-    private static void muestraBusquedasArtista(ArtistRepository artistRepository) {
+    private static void muestraBusquedasArtista(ArtistRepository artistRepository) throws IOException {
         Menu.cls();
         System.out.println("""
                 [?] Qué quieres hacer? 
                 1. Obtener artistas ordenados por oyentes mensuales
                 2. Buscar artista por Nombre
-                0. Atrás
                 """);
         System.out.print("> ");
         String opcion = sc.nextLine();
@@ -421,7 +426,31 @@ public class Menu {
             System.err.print("\n[!] Opcion no valida\n> ");
             opcion = sc.nextLine();
         }
-        // TODO
+        switch (Integer.parseInt(opcion)) {
+            case 1 -> {
+                List<Artista> ordenados = artistRepository.getAll().stream()
+                        .sorted(Comparator.comparing(Artista::getListeners))
+                        .toList();
+
+                Menu.cls();
+
+                if (Menu.mostrarOexportar("artistas") == 2) {
+                    CsvExporter.exportArtists(ordenados, Menu.pideRutaExportacion());
+                }
+
+                ordenados.forEach(Formatters::artistaShortFormatter);
+                Menu.pause();
+            }
+
+            case 2 -> {
+                System.out.print("\n[?] Nombre a buscar: ");
+                List<Artista> artistas = artistRepository.getByName(sc.nextLine());
+                Menu.cls();
+                System.out.println("[+] Se ha encontrado: ");
+                artistas.forEach(Formatters::artistaShortFormatter);
+                Menu.pause();
+            }
+        }
     }
 
     private static void muestraBusquedasAlbum(AlbumRepository albumRepository) {
