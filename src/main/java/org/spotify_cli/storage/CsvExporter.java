@@ -51,6 +51,10 @@ public class CsvExporter {
         Files.writeString(archivo, "ID;ID del artista;Nombre;Numero de tracks;Fecha de lanzamiento");
 
         albums.forEach( album -> {
+            String release_date = "No hay datos";
+            if (album.getRelease_date()!=null) {
+                release_date = album.getRelease_date().toString();
+            }
             try {
                 Files.writeString(
                         archivo,
@@ -59,7 +63,7 @@ public class CsvExporter {
                                 album.getArtist_id(),
                                 album.getName(),
                                 album.getNo_tracks(),
-                                album.getRelease_date().toString()
+                                release_date
                         ),
                         StandardCharsets.UTF_8, StandardOpenOption.APPEND
                 );
