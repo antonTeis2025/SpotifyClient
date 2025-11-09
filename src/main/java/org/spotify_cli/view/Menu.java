@@ -446,6 +446,9 @@ public class Menu {
                 System.out.print("\n[?] Nombre a buscar: ");
                 List<Artista> artistas = artistRepository.getByName(sc.nextLine());
                 Menu.cls();
+                if (Menu.mostrarOexportar("artistas") == 2) {
+                    CsvExporter.exportArtists(artistas, Menu.pideRutaExportacion());
+                }
                 System.out.println("[+] Se ha encontrado: ");
                 artistas.forEach(Formatters::artistaShortFormatter);
                 Menu.pause();
@@ -453,14 +456,13 @@ public class Menu {
         }
     }
 
-    private static void muestraBusquedasAlbum(AlbumRepository albumRepository) {
+    private static void muestraBusquedasAlbum(AlbumRepository albumRepository) throws IOException {
         Menu.cls();
         System.out.println("""
                 [?] Qué quieres hacer? 
                 1. Obtener albumes ordenados por fecha de lanzamiento
                 2. Buscar album por nombre
                 3. Obtener singles (albumes con un track)
-                0. Atrás
                 """);
         System.out.print("> ");
         String opcion = sc.nextLine();
@@ -472,7 +474,42 @@ public class Menu {
             System.err.print("\n[!] Opcion no valida\n> ");
             opcion = sc.nextLine();
         }
-        // TODO
+        switch (Integer.parseInt(opcion)) {
+            case 1 -> {
+                List<Album> ordenados = albumRepository.getAll().stream()
+                        .sorted(Comparator.comparing(Album::getRelease_date))
+                        .toList();
+                Menu.cls();
+                if (Menu.mostrarOexportar("albumes") == 2) {
+                    CsvExporter.exportAlbums(ordenados, Menu.pideRutaExportacion());
+                }
+                ordenados.forEach(Formatters::albumShortFormatter);
+                Menu.pause();
+            }
+            case 2 -> {
+                System.out.print("\n[?] Nombre a buscar: ");
+                List<Album> resultados = albumRepository.getByName(sc.nextLine());
+                Menu.cls();
+                if (Menu.mostrarOexportar("albumes") == 2) {
+                    CsvExporter.exportAlbums(resultados, Menu.pideRutaExportacion());
+                }
+                System.out.println("[+] Encontrado: ");
+                resultados.forEach(Formatters::albumShortFormatter);
+                Menu.pause();
+            }
+            case 3 -> {
+                List<Album> singles = albumRepository.getAll().stream()
+                        .filter(album -> album.getNo_tracks() == 1)
+                        .toList();
+                Menu.cls();
+                if (Menu.mostrarOexportar("albumes") == 2) {
+                    CsvExporter.exportAlbums(singles, Menu.pideRutaExportacion());
+                }
+                System.out.println("[+] Encontrado: ");
+                singles.forEach(Formatters::albumShortFormatter);
+                Menu.pause();
+            }
+        }
     }
 
 
@@ -482,7 +519,6 @@ public class Menu {
                 [?] Qué quieres hacer? 
                 1. Obtener tracks ordenados por duracion
                 2. Buscar track por nombre
-                0. Atrás
                 """);
         System.out.print("> ");
         String opcion = sc.nextLine();
