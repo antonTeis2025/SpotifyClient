@@ -386,9 +386,9 @@ public class Menu {
         System.out.print("> ");
         String opcion = sc.nextLine();
         while (opcion.isEmpty()
-                && Integer.parseInt(opcion) == 1
-                && Integer.parseInt(opcion) == 2
-                && Integer.parseInt(opcion) == 3
+                && Integer.parseInt(opcion) != 1
+                && Integer.parseInt(opcion) != 2
+                && Integer.parseInt(opcion) != 3
         ) {
             System.err.print("\n[!] Opcion no valida\n> ");
             opcion = sc.nextLine();
@@ -412,7 +412,16 @@ public class Menu {
                 2. Buscar artista por Nombre
                 0. Atrás
                 """);
-
+        System.out.print("> ");
+        String opcion = sc.nextLine();
+        while (opcion.isEmpty()
+                && Integer.parseInt(opcion) != 1
+                && Integer.parseInt(opcion) != 2
+        ) {
+            System.err.print("\n[!] Opcion no valida\n> ");
+            opcion = sc.nextLine();
+        }
+        // TODO
     }
 
     private static void muestraBusquedasAlbum(AlbumRepository albumRepository) {
@@ -424,6 +433,17 @@ public class Menu {
                 3. Obtener singles (albumes con un track)
                 0. Atrás
                 """);
+        System.out.print("> ");
+        String opcion = sc.nextLine();
+        while (opcion.isEmpty()
+                && Integer.parseInt(opcion) != 1
+                && Integer.parseInt(opcion) != 2
+                && Integer.parseInt(opcion) != 3
+        ) {
+            System.err.print("\n[!] Opcion no valida\n> ");
+            opcion = sc.nextLine();
+        }
+        // TODO
     }
 
 
@@ -435,5 +455,16 @@ public class Menu {
                 2. Buscar track por nombre
                 0. Atrás
                 """);
+        System.out.print("> ");
+        String opcion = sc.nextLine();
+        while (opcion.isEmpty()
+                && Integer.parseInt(opcion) != 1
+                && Integer.parseInt(opcion) != 2
+        ) {
+            System.err.print("\n[!] Opcion no valida\n> ");
+            opcion = sc.nextLine();
+        }
+        // TODO
+
     }
 }

@@ -116,6 +116,19 @@ public class AlbumRepository {
         return a.get();
     }
 
+    public Album getByName(String name) {
+        System.out.println("[+] Obteniendo album con nombre " + name);
+        List<Map<String, Object>> artists = db.select("SELECT * FROM Album WHERE name = ?", name);
+        AtomicReference<Album> a = new AtomicReference<>();
+        artists.
+                forEach(
+                        fila -> {
+                            a.set(parseAlbum(fila));
+                        }
+                );
+        return a.get();
+    }
+
     public List<Album> getByArtist(Artista a) {
         System.out.println("[+] Obteniendo albums del artista " + a.getName());
         List<Album> albums = new ArrayList<>();
@@ -138,7 +151,6 @@ public class AlbumRepository {
                 entity.getName(), entity.getNo_tracks(), entity.getRelease_date(), id);
         return entity;
     }
-    // TODO public Album getByName(String name) { }
 
 
     private Album parseAlbum(Map<String, Object> fila) {

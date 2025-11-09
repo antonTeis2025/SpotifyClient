@@ -82,6 +82,19 @@ public class TrackRepository {
         return res;
     }
 
+    public Track getByTitle(String title) {
+        System.out.println("[+] Obteniendo track con titulo " + title);
+        List<Map<String, Object>> tracks = db.select("SELECT * FROM Track WHERE titulo = ?", title);
+        AtomicReference<Track> a = new AtomicReference<>();
+        tracks.
+                forEach(
+                        fila -> {
+                            a.set(parseTrack(fila));
+                        }
+                );
+        return a.get();
+    }
+
     public Track delete(String id) {
         Track t = getById(id);
         db.delete("DELETE FROM Track WHERE id = ?", id);
@@ -93,7 +106,7 @@ public class TrackRepository {
 
         return entity;
     }
-    // TODO public Track getByName(String name) { }
+
     private Track parseTrack(Map<String, Object> fila) {
         return new Track(
                 (String) fila.get("id"),

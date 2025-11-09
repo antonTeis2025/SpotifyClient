@@ -81,6 +81,19 @@ public class ArtistRepository implements Repository<Artista, String> {
         return a.get();
     }
 
+    public Artista getByName(String name) {
+        System.out.println("[+] Obteniendo artista con nombre " + name);
+        List<Map<String, Object>> artists = db.select("SELECT * FROM Artista WHERE name = ?", name);
+        AtomicReference<Artista> a = new AtomicReference<>();
+        artists.
+                forEach(
+                        fila -> {
+                            a.set(parseArtista(fila));
+                        }
+                );
+        return a.get();
+    }
+
     @Override
     public Artista update(Artista entity, String s) {
         Artista a = new Artista(
