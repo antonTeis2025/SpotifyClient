@@ -74,7 +74,12 @@ public class TrackRepository {
         db.delete("DELETE FROM Track WHERE id = ?", id);
         return t;
     }
-    // TODO public Track update(Track entity, String id) { }
+    public Track update(Track entity, String id) {
+        db.update("UPDATE Track SET duration = ?, titulo = ? WHERE id = ?",
+                entity.getDuration(), entity.getTitulo());
+
+        return entity;
+    }
     // TODO public Track getByName(String name) { }
     private Track parseTrack(Map<String, Object> fila) {
         return new Track(

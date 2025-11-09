@@ -121,7 +121,12 @@ public class AlbumRepository {
         db.delete("DELETE FROM Album WHERE id = ?", id);
         return a;
     }
-    // TODO public Album update(Album entity, String id) { }
+
+    public Album update(Album entity, String id) {
+        db.update("UPDATE Album SET name = ?, no_tracks = ?, release_date = ?",
+                entity.getName(), entity.getNo_tracks(), entity.getRelease_date());
+        return entity;
+    }
     // TODO public Album getByName(String name) { }
 
 
