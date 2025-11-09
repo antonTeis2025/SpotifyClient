@@ -54,6 +54,14 @@ public class Menu {
                             Artista a = Menu.muestraActualizarArtista(arr);
                             arr.update(a, a.getId());
                         }
+                        case 2 -> {
+                            Album a = Menu.muestraActualizarAlbum(alr);
+                            alr.update(a, a.getId());
+                        }
+                        case 3 -> {
+                            Track t = Menu.muestraActualizarTrack(tr);
+                            tr.update(t, t.getId());
+                        }
                     }
                 }
                 default -> System.err.println("[!] Opcion Invalida");
@@ -62,6 +70,7 @@ public class Menu {
         }
 
     }
+
 
     private static void muestraBanner() {
         System.out.println("""
@@ -178,34 +187,86 @@ public class Menu {
         return sc.nextLine();
     }
 
-    private static Artista muestraActualizarArtista(ArtistRepository artistRepository) {
+    private static Artista seleccionarArtista(ArtistRepository artistRepository) {
         String id = Menu.muestraSeleccionarArtista(artistRepository.getAll());
-        Artista oldArtista = artistRepository.getById(id);
+        return artistRepository.getById(id);
+    }
+    private static Album seleccionarAlbum (AlbumRepository albumRepository) {
+        String id = Menu.muestraSeleccionarAlbum(albumRepository.getAll());
+        return albumRepository.getById(id);
+    }
+    private static Track seleccionarTrack (TrackRepository trackRepository) {
+        String id = Menu.muestraSeleccionarTrack(trackRepository.getAll());
+        return trackRepository.getById(id);
+    }
+
+    private static String enterOrOld(String nuevo, String old) {
+        if (nuevo.equals("")) {
+            return old;
+        } else {
+            return nuevo;
+        }
+    }
+
+    private static Artista muestraActualizarArtista(ArtistRepository artistRepository) {
+        Artista oldArtista = Menu.seleccionarArtista(artistRepository);
 
         Menu.cls();
         System.out.print(String.format("[?] Nuevo nombre (Enter para mantener %s): ", oldArtista.getName()));
-        String nuevoNombre = sc.nextLine();
-        if (nuevoNombre.equals("")) {
-            nuevoNombre = oldArtista.getName();
-        }
+        String nuevoNombre = Menu.enterOrOld(sc.nextLine(), oldArtista.getName());
 
         System.out.print(String.format("[?] Nuevos oyentes (Enter para mantener %d): ", oldArtista.getListeners()));
-        String nuevosOyentes = sc.nextLine();
-        if (nuevosOyentes.equals("")) {
-            nuevosOyentes = Integer.toString(oldArtista.getListeners());
-        }
+        String nuevosOyentes = Menu.enterOrOld(sc.nextLine(), Integer.toString(oldArtista.getListeners()));
 
         System.out.print(String.format("[?] Nuevo URL (Enter para mantener %s): ", oldArtista.getUrl()));
-        String nuevoURL = sc.nextLine();
-        if (nuevoURL.equals("")){
-            nuevoURL = oldArtista.getUrl();
-        }
+        String nuevoURL = Menu.enterOrOld(sc.nextLine(), oldArtista.getUrl());
 
         return new Artista(
                 oldArtista.getId(),
                 nuevoNombre,
                 Integer.parseInt(nuevosOyentes),
                 nuevoURL
+        );
+    }
+
+    private static Album muestraActualizarAlbum(AlbumRepository albumRepository) {
+        Album oldAlbum = Menu.seleccionarAlbum(albumRepository);
+        Menu.cls();
+
+        System.out.print(String.format("[?] Nuevo nombre (Enter para mantener %s): ", oldAlbum.getName()));
+        String nuevoNombre = Menu.enterOrOld(sc.nextLine(), oldAlbum.getName());
+
+
+        System.out.print(String.format("[?] Nueva fecha de lanzamiento (Enter para mantener %s): ", oldAlbum.getName()));
+        String nuevaFecha = Menu.enterOrOld(sc.nextLine(), oldAlbum.getRelease_date().toString());
+
+        return new Album(
+                oldAlbum.getId(),
+                oldAlbum.getArtist_id(),
+                nuevoNombre,
+                nuevaFecha,
+                oldAlbum.getNo_tracks()
+        );
+    }
+
+
+    private static Track muestraActualizarTrack(TrackRepository tr) {
+        Track oldTrack = Menu.seleccionarTrack(tr);
+        Menu.cls();
+
+        System.out.print(String.format("[?] Nuevo titulo (Enter para mantener %s): ", oldTrack.getTitulo()));
+        String nuevoNombre = Menu.enterOrOld(sc.nextLine(), oldTrack.getTitulo());
+
+
+        System.out.print(String.format("[?] Nueva duracion (Enter para mantener %d): ", oldTrack.getDuration()));
+        String nuevaDuracion = Menu.enterOrOld(sc.nextLine(), Integer.toString(oldTrack.getDuration()));
+
+        return new Track(
+                oldTrack.getId(),
+                oldTrack.getAlbum_id(),
+                oldTrack.getArtist_id(),
+                Integer.parseInt(nuevaDuracion),
+                nuevoNombre
         );
     }
 
