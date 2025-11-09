@@ -44,11 +44,59 @@ public class CsvExporter {
         System.out.println("[+] Artistas exportados correctamente!");
     }
 
-    public static void exportAlbums(List<Album> albums, String path) {
+    public static void exportAlbums(List<Album> albums, String path) throws IOException {
+        System.out.println("[+] Exportando albums al fichero " + path);
+        Path archivo = Path.of(path);
+        Files.createFile(archivo);
+        Files.writeString(archivo, "ID;ID del artista;Nombre;Numero de tracks;Fecha de lanzamiento");
 
+        albums.forEach( album -> {
+            try {
+                Files.writeString(
+                        archivo,
+                        String.format("\n%s;%s;%s;%d;%s",
+                                album.getId(),
+                                album.getArtist_id(),
+                                album.getName(),
+                                album.getNo_tracks(),
+                                album.getRelease_date().toString()
+                        ),
+                        StandardCharsets.UTF_8, StandardOpenOption.APPEND
+                );
+            } catch (IOException e) {
+                System.err.println("[!] Error: " + e);
+                System.err.println("[!] No se pudo exportar "+ album.toString());
+            }
+        });
+
+        System.out.println("[+] Albums exportados correctamente!");
     }
 
-    public static void exportTracks(List<Track> tracks, String path) {
+    public static void exportTracks(List<Track> tracks, String path) throws IOException {
+        System.out.println("[+] Exportando tracks al fichero " + path);
+        Path archivo = Path.of(path);
+        Files.createFile(archivo);
+        Files.writeString(archivo, "ID;ID del album;ID del artista;Duracion;Titulo");
 
+        tracks.forEach( track -> {
+            try {
+                Files.writeString(
+                        archivo,
+                        String.format("\n%s;%s;%s;%d;%s",
+                                track.getId(),
+                                track.getAlbum_id(),
+                                track.getArtist_id(),
+                                track.getDuration(),
+                                track.getTitulo()
+                        ),
+                        StandardCharsets.UTF_8, StandardOpenOption.APPEND
+                );
+            } catch (IOException e) {
+                System.err.println("[!] Error: " + e);
+                System.err.println("[!] No se pudo exportar "+ track.toString());
+            }
+        });
+
+        System.out.println("[+] Albums exportados correctamente!");
     }
 }
