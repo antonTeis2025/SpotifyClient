@@ -103,7 +103,7 @@ public class Menu {
         System.out.println("3. Fuchicar (mira / exporta los datos)...");
         System.out.println("4. Eliminar...");
         System.out.println("5. Actualizar...");
-        System.out.println("6. Buscar...");
+        System.out.println("6. Busquedas / ordenaciones...");
         System.out.println("0. Salir...");
         System.out.print("\n> ");
         opcion = Integer.parseInt(sc.nextLine());
@@ -145,7 +145,7 @@ public class Menu {
         }
         return opcion;
     }
-    // OPCION 5 // TODO
+
     private static int muestraMenuActualizar() {
         Menu.cls();
         System.out.println("""
@@ -374,4 +374,66 @@ public class Menu {
 
     };
 
+    public static void muestraMenuBusquedas(ArtistRepository artistRepository, AlbumRepository albumRepository, TrackRepository trackRepository) throws IOException, InterruptedException {
+        Menu.cls();
+        System.out.println("""
+                [?] Sobre qué tipo de dato quieres hacer búsquedas? 
+                1. Artistas
+                2. Albumes
+                3. Tracks
+                0. Atras
+                """);
+        System.out.print("> ");
+        String opcion = sc.nextLine();
+        while (opcion.isEmpty()
+                && Integer.parseInt(opcion) == 1
+                && Integer.parseInt(opcion) == 2
+                && Integer.parseInt(opcion) == 3
+        ) {
+            System.err.print("\n[!] Opcion no valida\n> ");
+            opcion = sc.nextLine();
+        }
+
+        switch (Integer.parseInt(opcion)) {
+            case 1 -> Menu.muestraBusquedasArtista(artistRepository);
+            case 2 -> Menu.muestraBusquedasAlbum(albumRepository);
+            case 3 -> Menu.muestraBusquedasTrack(trackRepository);
+            case 0 -> Menu.start(artistRepository, albumRepository, trackRepository);
+        }
+
+    }
+
+
+    private static void muestraBusquedasArtista(ArtistRepository artistRepository) {
+        Menu.cls();
+        System.out.println("""
+                [?] Qué quieres hacer? 
+                1. Obtener artistas ordenados por oyentes mensuales
+                2. Buscar artista por Nombre
+                0. Atrás
+                """);
+
+    }
+
+    private static void muestraBusquedasAlbum(AlbumRepository albumRepository) {
+        Menu.cls();
+        System.out.println("""
+                [?] Qué quieres hacer? 
+                1. Obtener albumes ordenados por fecha de lanzamiento
+                2. Buscar album por nombre
+                3. Obtener singles (albumes con un track)
+                0. Atrás
+                """);
+    }
+
+
+    private static void muestraBusquedasTrack(TrackRepository trackRepository) {
+        Menu.cls();
+        System.out.println("""
+                [?] Qué quieres hacer? 
+                1. Obtener tracks ordenados por duracion
+                2. Buscar track por nombre
+                0. Atrás
+                """);
+    }
 }

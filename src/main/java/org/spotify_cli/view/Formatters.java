@@ -35,9 +35,7 @@ public class Formatters {
 
     public static void trackFormatter(Track t) {
         System.out.println(String.format("""
-                
                 %s [ %s ]                
-                
                 """, t.getTitulo(), Formatters.msToDuration(t.getDuration())
         ));
     }
