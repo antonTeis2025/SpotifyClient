@@ -1,6 +1,7 @@
 package org.spotify_cli;
 
 import org.spotify_cli.api.ApiClient;
+import org.spotify_cli.auth.Authenticator;
 import org.spotify_cli.config.Config;
 import org.spotify_cli.database.DatabaseService;
 import org.spotify_cli.models.Album;
@@ -12,10 +13,11 @@ import org.spotify_cli.repository.TrackRepository;
 import org.spotify_cli.view.Menu;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 public class Main {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, SQLException {
 
         // Inicializamos los servicios de BBDD y de API
         RepositoryResources repositoryResources = new RepositoryResources(
@@ -26,6 +28,11 @@ public class Main {
         TrackRepository tr = new TrackRepository(repositoryResources);
         AlbumRepository alr = new AlbumRepository(repositoryResources, tr);
         ArtistRepository arr = new ArtistRepository(repositoryResources, alr);
+        // AUTENTICACION ANTES DE INICIAR EL PROGRAMA
+        Authenticator authenticator = new Authenticator(repositoryResources.getDb());
+        Menu.cls();
+        // si no autentica, se cierra el programa y no pasaria de aqui.
+        authenticator.auth();
 
         if (Config.getDatabaseInitData()) {
             // si la opcion esta activada, añade datos de muestra

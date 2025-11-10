@@ -26,6 +26,7 @@ public class DatabaseService{
         }
         if (Config.getDatabaseInitTables()) {
             initTablas();
+            initTablasAuth();
         }
 
     }
@@ -100,7 +101,34 @@ public class DatabaseService{
         }
     }
 
+    public void initTablasAuth() {
+        try {
+            URL resourceUrl = ClassLoader.getSystemResource("sql/03-auth.sql");
+            Path path = Paths.get(resourceUrl.toURI());
+            String sqlContent = Files.readString(path);
+            List<String> statements = Arrays.asList(sqlContent.split(";\\s*"));
 
+            try (Statement stmt = connection.createStatement()) {
+                for (String statement : statements) {
+                    if (statement.trim().isEmpty()) continue;
+
+                    try {
+                        stmt.execute(statement.trim());
+                        System.out.println("[+] Sentencia ejecutada: " +
+                                statement.trim().substring(0, Math.min(50, statement.trim().length())) + "...");
+                    } catch (Exception e) {
+                        System.err.println("[!] Error en sentencia: " +
+                                statement.trim().substring(0, Math.min(50, statement.trim().length())) + "...");
+                        throw e;
+                    }
+                }
+                System.out.println("[+] Tabla login creada correctamente");
+            }
+        } catch (Exception e) {
+            System.err.println("[!] Error al crear las tablas: " + e.getMessage());
+            throw new RuntimeException("Error inicializando base de datos", e);
+        }
+    }
 
     public List<Map<String, Object>> select(String sql, Object... params) {
         System.out.println("[!] Ejecutando consulta: " + sql);
